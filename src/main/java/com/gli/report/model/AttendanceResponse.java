@@ -9,8 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AttendanceResponse {
 
+    private String id;
     private String holyName;
-    private String fullName;
+    private String lastName;
+    private String firsName;
     private String gradeName;
     private int weekDay;
     private int sunday;

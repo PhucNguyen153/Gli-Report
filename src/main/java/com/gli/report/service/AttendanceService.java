@@ -31,7 +31,9 @@ public class AttendanceService {
         mapByStudent.forEach((s, aLst) -> {
             AttendanceResponse res = new AttendanceResponse();
             res.setHolyName(s.getHolyName());
-            res.setFullName(s.getFullName());
+            res.setFirsName(s.getFirstName());
+            res.setLastName(s.getLastName());
+            res.setId(s.getId());
             res.setTeacher(aLst.get(0).getGrade().getTeacher());
             res.setGradeName(aLst.get(0).getGrade().getName());
             int weekDay = 0;
@@ -39,14 +41,14 @@ public class AttendanceService {
             int attendClass = 0;
 
             for (Attendance a: aLst) {
-                if (a.getAttendanceDate().getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
-                    if (a.getType() == 1) {
-                        sunDay++;
-                    } else {
-                        attendClass++;
-                    }
+                if (a.getType() == 2) {
+                    attendClass++;
+                    continue;
+                }
+                if (a.getAttendanceDate().getDayOfWeek().equals(DayOfWeek.SUNDAY) && a.getType() == 1) {
+                   sunDay++;
                 } else {
-                    weekDay++;
+                   weekDay++;
                 }
             }
 

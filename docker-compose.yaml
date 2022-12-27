@@ -1,0 +1,8 @@
+version: '1'
+services:
+  gli:
+    image: phuc3733/gli-report
+    ports:
+      - 80:8080
+    build:
+      context: .
