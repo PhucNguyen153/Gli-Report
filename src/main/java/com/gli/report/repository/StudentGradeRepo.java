@@ -10,6 +10,7 @@ import java.util.List;
 public interface StudentGradeRepo extends CrudRepository<StudentGrade, Integer> {
 
     @Query("select sg from StudentGrade sg where " +
-           "sg.grade.id in (:gradeIds)")
+           "sg.grade.id in (:gradeIds) " +
+           "and sg.deletedDate is null")
     List<StudentGrade> findAllStudentByGrade(@Param("gradeIds") List<Integer> gradeIds);
 }
