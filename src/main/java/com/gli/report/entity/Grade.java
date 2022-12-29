@@ -10,7 +10,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "LOPHOC")
 @Data
-public class Grade {
+public class Grade implements Comparable<Grade>{
 
     @Id
     @Column(name = "MALOPHOC")
@@ -30,4 +30,9 @@ public class Grade {
 
     @Column(name = "MAKHOI")
     private int unitId;
+
+    @Override
+    public int compareTo(Grade o) {
+        return this.name.compareTo(o.getName());
+    }
 }

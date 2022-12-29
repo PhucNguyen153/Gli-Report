@@ -12,10 +12,14 @@ public class AttendanceResponse {
     private String id;
     private String holyName;
     private String lastName;
-    private String firsName;
+    private String firstName;
     private String gradeName;
     private int weekDay;
     private int sunday;
     private int attendClass;
     private String teacher;
+
+    public String getFullName() {
+        return this.lastName + " " + this.firstName;
+    }
 }
