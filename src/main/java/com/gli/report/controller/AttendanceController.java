@@ -40,9 +40,16 @@ public class AttendanceController {
         try {
             ByteArrayInputStream result = attendanceService.exportExcel(request);
             if (result != null) {
+                StringBuilder headerValues = new StringBuilder();
+                headerValues.append("attachment;filename=")
+                        .append("Report_")
+                        .append(request.getStartDate().toString())
+                        .append("_")
+                        .append(request.getEndDate().toString())
+                        .append(".xlsx");
                 return ResponseEntity
                         .status(HttpStatus.OK)
-                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=Report.xlsx")
+                        .header(HttpHeaders.CONTENT_DISPOSITION, headerValues.toString())
                         .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
                         .body(new InputStreamResource(result));
             }

@@ -91,7 +91,7 @@ public class AttendanceService {
         sorted.forEach((grade, sLst) -> {
             Collator esCollator = Collator.getInstance(new Locale("vi", "VN"));
             sLst.sort((s1, s2) -> {
-                return esCollator.compare(s1.getStudent().getFullName(), s2.getStudent().getFullName());
+                return esCollator.compare(s1.getStudent().getFirstName(), s2.getStudent().getFirstName());
             });
             for (StudentGrade sg: sLst) {
                 AttendanceResponse res = new AttendanceResponse();
