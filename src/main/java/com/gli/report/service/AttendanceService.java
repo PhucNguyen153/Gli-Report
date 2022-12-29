@@ -185,10 +185,13 @@ public class AttendanceService {
         headerCell = header.createCell(7);
         headerCell.setCellValue("Đi học");
         headerCell.setCellStyle(cellStyle);
+        headerCell = header.createCell(8);
+        headerCell.setCellValue("Tổng lễ");
+        headerCell.setCellStyle(cellStyle);
 
         CellStyle teacherStyle = setStyleForCell("teacher", workbook);
 
-        headerCell = header.createCell(8);
+        headerCell = header.createCell(9);
         headerCell.setCellValue("GLV: " + teacher);
         headerCell.setCellStyle(teacherStyle);
     }
@@ -221,6 +224,9 @@ public class AttendanceService {
             cell.setCellStyle(cellStyle);
             cell = row.createCell(7);
             cell.setCellValue(ar.getAttendClass());
+            cell.setCellStyle(cellStyle);
+            cell = row.createCell(8);
+            cell.setCellValue(ar.getWeekDay() + ar.getSunday());
             cell.setCellStyle(cellStyle);
             rowNum++;
         }
