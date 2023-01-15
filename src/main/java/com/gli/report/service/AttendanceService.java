@@ -134,8 +134,9 @@ public class AttendanceService {
     public ByteArrayInputStream exportExcel(AttendanceRequest request) throws IOException {
         List<AttendanceResponse> data = getAttendanceByTimeV2(request);
         Map<String, List<AttendanceResponse>> mapByGradeName = data.stream().collect(Collectors.groupingBy(AttendanceResponse::getGradeName));
+        TreeMap<String, List<AttendanceResponse>> sorted = new TreeMap<>(mapByGradeName);
         Workbook workbook = new XSSFWorkbook();
-        mapByGradeName.forEach((gName, aLst) -> {
+        sorted.forEach((gName, aLst) -> {
             Sheet sheet = workbook.createSheet(gName);
             //Create data for header
             createHeader(sheet, workbook, aLst.get(0).getTeacher());
