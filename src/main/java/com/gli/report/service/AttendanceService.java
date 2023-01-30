@@ -1,16 +1,14 @@
 package com.gli.report.service;
 
-import com.gli.report.entity.Attendance;
-import com.gli.report.entity.Grade;
-import com.gli.report.entity.Student;
-import com.gli.report.entity.StudentGrade;
+import com.gli.report.entity.*;
 import com.gli.report.model.AttendanceRequest;
 import com.gli.report.model.AttendanceResponse;
+import com.gli.report.model.StudentInfo;
 import com.gli.report.repository.AttendanceRepo;
 import com.gli.report.repository.StudentGradeRepo;
+import com.gli.report.repository.StudentRepo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -29,11 +27,17 @@ public class AttendanceService {
 
     private final AttendanceRepo attendanceRepo;
     private final StudentGradeRepo studentGradeRepo;
+    private final StudentRepo studentRepo;
+    private final ScholasticService scholasticService;
 
     public AttendanceService(AttendanceRepo attendanceRepo,
-                             StudentGradeRepo studentGradeRepo) {
+                             StudentGradeRepo studentGradeRepo,
+                             StudentRepo studentRepo,
+                             ScholasticService scholasticService) {
         this.attendanceRepo = attendanceRepo;
         this.studentGradeRepo = studentGradeRepo;
+        this.studentRepo = studentRepo;
+        this.scholasticService = scholasticService;
     }
 
     public List<AttendanceResponse> getAttendanceByTime(AttendanceRequest request) {
@@ -266,5 +270,42 @@ public class AttendanceService {
         cellStyle.setBorderRight(BorderStyle.DOUBLE);
         cellStyle.setBorderLeft(BorderStyle.DOUBLE);
         return cellStyle;
+    }
+
+    public List<StudentInfo> searchByName(String name) {
+        int latestScholastic = scholasticService.findLatest();
+        List<Object[]> searchObjects = studentRepo.searchByNameAndScholasticId(name, latestScholastic);
+        return mapperObject(searchObjects);
+    }
+
+    private List<StudentInfo> mapperObject(List<Object[]> rootObjects) {
+        List<StudentInfo> result = new ArrayList<>();
+        for (Object[] ob: rootObjects) {
+            StudentInfo si = new StudentInfo();
+            si.setId(String.valueOf(ob[0]));
+            StringBuilder fullName = new StringBuilder();
+            fullName.append(String.valueOf(ob[1]))
+                    .append(" ")
+                    .append(String.valueOf(ob[2]))
+                    .append(" ")
+                    .append(String.valueOf(ob[3]));
+            si.setFullName(fullName.toString());
+            si.setFather(String.valueOf(ob[4]));
+            si.setMother(String.valueOf(ob[5]));
+            StringBuilder teacherFullName = new StringBuilder();
+            teacherFullName.append(String.valueOf(ob[6]))
+                           .append(" ")
+                           .append(String.valueOf(ob[7]))
+                           .append(" ")
+                           .append(String.valueOf(ob[8]));
+            si.setTeacher(teacherFullName.toString());
+            si.setPhoneNumber(String.valueOf(ob[9]));
+            si.setTeacherPhoneNumber(String.valueOf(ob[10]));
+            si.setGrade(String.valueOf(ob[11]));
+            si.setUnit(String.valueOf(ob[12]));
+            si.setDiocese(String.valueOf(ob[13]));
+            result.add(si);
+        }
+        return result;
     }
 }

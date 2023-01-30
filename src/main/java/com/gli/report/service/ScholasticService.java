@@ -26,4 +26,8 @@ public class ScholasticService {
     public List<Scholastic> getAll() {
         return new ArrayList<>((Collection) scholasticRepo.findAll());
     }
+
+    public int findLatest() {
+        return scholasticRepo.findByMaxId();
+    }
 }

@@ -61,4 +61,14 @@ public class AttendanceController {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchByName(@RequestParam String name) {
+        try {
+            return ResponseEntity.ok(attendanceService.searchByName(name));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
 }
