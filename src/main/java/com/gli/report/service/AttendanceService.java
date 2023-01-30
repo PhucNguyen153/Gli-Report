@@ -3,6 +3,7 @@ package com.gli.report.service;
 import com.gli.report.entity.*;
 import com.gli.report.model.AttendanceRequest;
 import com.gli.report.model.AttendanceResponse;
+import com.gli.report.model.SearchRequest;
 import com.gli.report.model.StudentInfo;
 import com.gli.report.repository.AttendanceRepo;
 import com.gli.report.repository.StudentGradeRepo;
@@ -272,9 +273,9 @@ public class AttendanceService {
         return cellStyle;
     }
 
-    public List<StudentInfo> searchByName(String name) {
+    public List<StudentInfo> search(SearchRequest request) {
         int latestScholastic = scholasticService.findLatest();
-        List<Object[]> searchObjects = studentRepo.searchByNameAndScholasticId(name, latestScholastic);
+        List<Object[]> searchObjects = studentRepo.searchByNameAndScholasticId(request.getName(), latestScholastic);
         return mapperObject(searchObjects);
     }
 

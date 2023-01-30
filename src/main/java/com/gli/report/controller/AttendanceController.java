@@ -1,6 +1,7 @@
 package com.gli.report.controller;
 
 import com.gli.report.model.AttendanceRequest;
+import com.gli.report.model.SearchRequest;
 import com.gli.report.service.AttendanceService;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -62,10 +63,10 @@ public class AttendanceController {
         }
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<?> searchByName(@RequestParam String name) {
+    @PostMapping("/search")
+    public ResponseEntity<?> searchByName(@RequestBody SearchRequest searchRequest) {
         try {
-            return ResponseEntity.ok(attendanceService.searchByName(name));
+            return ResponseEntity.ok(attendanceService.search(searchRequest));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body(e.getMessage());

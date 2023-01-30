@@ -1,7 +1,6 @@
 package com.gli.report.repository;
 
 import com.gli.report.entity.Student;
-import com.gli.report.model.StudentInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
