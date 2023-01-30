@@ -13,6 +13,7 @@ public interface StudentRepo extends JpaRepository<Student, String> {
     @Query(value = "SELECT hv.MAHOCVIEN, hv.TENTHANH as hvHoly, hv.HOCANHAN as hvLast, hv.TENCANHAN as hvFirst, hv.HOTENPHCHA, hv.HOTENPHME, " +
             "glv.TENTHANH, glv.HOCANHAN, glv.TENCANHAN, hv.SODIENTHOAI as hvPhone, glv.SODIENTHOAI, lh.TENLOPHOC, k.TENKHOI, gh.TENGIAOHO " +
             "FROM HOCVIEN hv " +
+            "left outer join KHONGCONHOC kch on kch.MAHOCVIEN = hv.MAHOCVIEN " +
             "join THEOHOC th on hv.MAHOCVIEN = th.MAHOCVIEN " +
             "join LOPHOC lh on th.MALOPHOC = lh.MALOPHOC " +
             "join DAY_LOP dl on lh.MALOPHOC = dl.MALOPHOC " +
@@ -20,6 +21,6 @@ public interface StudentRepo extends JpaRepository<Student, String> {
             "join GIAOHO gh on hv.MAGIAOHO = gh.MAGIAOHO " +
             "join KHOI k on k.MAKHOI = lh.MAKHOI " +
             "WHERE " +
-            "(hv.LNAME + ' ' + hv.FNAME) like %:name% and th.MANIENHOC = :scholasticId", nativeQuery = true)
+            "(UPPER(hv.LNAME + ' ' + hv.FNAME)) like UPPER(concat('%', :name,'%')) and th.MANIENHOC = :scholasticId", nativeQuery = true)
     List<Object[]> searchByNameAndScholasticId(@Param("name") String name, @Param("scholasticId") int scholasticId);
 }
