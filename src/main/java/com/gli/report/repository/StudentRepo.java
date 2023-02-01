@@ -20,6 +20,8 @@ public interface StudentRepo extends JpaRepository<Student, String> {
             "join GIAOHO gh on hv.MAGIAOHO = gh.MAGIAOHO " +
             "join KHOI k on k.MAKHOI = lh.MAKHOI " +
             "WHERE " +
-            "(UPPER(hv.LNAME + ' ' + hv.FNAME)) like UPPER(concat('%', :name,'%')) and th.MANIENHOC = :scholasticId", nativeQuery = true)
+            "(UPPER(hv.LNAME + ' ' + hv.FNAME)) like UPPER(concat('%', :name,'%')) " +
+            "and th.MANIENHOC = :scholasticId " +
+            "and dl.VAITRO != 'GLV1'", nativeQuery = true)
     List<Object[]> searchByNameAndScholasticId(@Param("name") String name, @Param("scholasticId") int scholasticId);
 }
