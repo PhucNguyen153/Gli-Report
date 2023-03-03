@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,7 +16,7 @@ public class StudentInfo {
     private String father;
     private String mother;
     private String teacher;
-    private String phoneNumber;
+    private List<String> phoneNumbers;
     private String teacherPhoneNumber;
     private String grade;
     private String unit;

@@ -300,11 +300,14 @@ public class AttendanceService {
                            .append(" ")
                            .append(String.valueOf(ob[8]));
             si.setTeacher(teacherFullName.toString());
-            si.setPhoneNumber(String.valueOf(ob[9]));
-            si.setTeacherPhoneNumber(String.valueOf(ob[10]));
-            si.setGrade(String.valueOf(ob[11]));
-            si.setUnit(String.valueOf(ob[12]));
-            si.setDiocese(String.valueOf(ob[13]));
+            List<String> phoneNumbers = new ArrayList<>();
+            if (!ObjectUtils.isEmpty(ob[9])) phoneNumbers.add(String.valueOf(ob[9]));
+            if (!ObjectUtils.isEmpty(ob[10])) phoneNumbers.add(String.valueOf(ob[10]));
+            si.setPhoneNumbers(phoneNumbers);
+            si.setTeacherPhoneNumber(String.valueOf(ob[11]));
+            si.setGrade(String.valueOf(ob[12]));
+            si.setUnit(String.valueOf(ob[13]));
+            si.setDiocese(String.valueOf(ob[14]));
             result.add(si);
         }
         return result;
