@@ -22,6 +22,7 @@ public interface StudentRepo extends JpaRepository<Student, String> {
             "WHERE " +
             "(UPPER(hv.LNAME + ' ' + hv.FNAME)) like UPPER(concat('%', :name,'%')) " +
             "and th.MANIENHOC = :scholasticId " +
-            "and dl.VAITRO != 'GLV1'", nativeQuery = true)
+            "and dl.VAITRO != 'GLV1' " +
+            "and th.NGAYXOA is null", nativeQuery = true)
     List<Object[]> searchByNameAndScholasticId(@Param("name") String name, @Param("scholasticId") int scholasticId);
 }
