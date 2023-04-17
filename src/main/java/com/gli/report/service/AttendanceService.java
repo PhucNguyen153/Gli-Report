@@ -6,6 +6,7 @@ import com.gli.report.model.AttendanceResponse;
 import com.gli.report.model.SearchRequest;
 import com.gli.report.model.StudentInfo;
 import com.gli.report.repository.AttendanceRepo;
+import com.gli.report.repository.CommentSemesterRepo;
 import com.gli.report.repository.StudentGradeRepo;
 import com.gli.report.repository.StudentRepo;
 import lombok.extern.slf4j.Slf4j;
@@ -30,15 +31,18 @@ public class AttendanceService {
     private final StudentGradeRepo studentGradeRepo;
     private final StudentRepo studentRepo;
     private final ScholasticService scholasticService;
+    private final CommentSemesterRepo commentSemesterRepo;
 
     public AttendanceService(AttendanceRepo attendanceRepo,
                              StudentGradeRepo studentGradeRepo,
                              StudentRepo studentRepo,
-                             ScholasticService scholasticService) {
+                             ScholasticService scholasticService,
+                             CommentSemesterRepo commentSemesterRepo) {
         this.attendanceRepo = attendanceRepo;
         this.studentGradeRepo = studentGradeRepo;
         this.studentRepo = studentRepo;
         this.scholasticService = scholasticService;
+        this.commentSemesterRepo = commentSemesterRepo;
     }
 
     public List<AttendanceResponse> getAttendanceByTime(AttendanceRequest request) {
@@ -275,7 +279,7 @@ public class AttendanceService {
 
     public List<StudentInfo> search(SearchRequest request) {
         int latestScholastic = scholasticService.findLatest();
-        List<Object[]> searchObjects = studentRepo.searchByNameAndScholasticId(request.getName(), latestScholastic);
+        List<Object[]> searchObjects = studentRepo.searchByNameAndScholasticId(request.getName(), latestScholastic, request.getGradeId());
         return mapperObject(searchObjects);
     }
 
@@ -308,6 +312,15 @@ public class AttendanceService {
             si.setGrade(String.valueOf(ob[12]));
             si.setUnit(String.valueOf(ob[13]));
             si.setDiocese(String.valueOf(ob[14]));
+            si.setNote(ob[15] == null ? "" : String.valueOf(ob[15]));
+            List<Object[]> commentLst = commentSemesterRepo.getCommentByStudentAndScholastic(si.getId(), scholasticService.findLatest());
+            if (!ObjectUtils.isEmpty(commentLst)) {
+                Map<String, String> cmts = new HashMap<>();
+                for (Object[] cmt: commentLst) {
+                    cmts.put(String.valueOf(cmt[0]), String.valueOf(cmt[1]));
+                }
+                si.setComments(cmts);
+            }
             result.add(si);
         }
         return result;
