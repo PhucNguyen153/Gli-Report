@@ -313,14 +313,15 @@ public class AttendanceService {
             si.setUnit(String.valueOf(ob[13]));
             si.setDiocese(String.valueOf(ob[14]));
             si.setNote(ob[15] == null ? "" : String.valueOf(ob[15]));
-            List<Object[]> commentLst = commentSemesterRepo.getCommentByStudentAndScholastic(si.getId(), scholasticService.findLatest());
-            if (!ObjectUtils.isEmpty(commentLst)) {
-                Map<String, String> cmts = new HashMap<>();
-                for (Object[] cmt: commentLst) {
-                    cmts.put(String.valueOf(cmt[0]), String.valueOf(cmt[1]));
-                }
-                si.setComments(cmts);
-            }
+            si.setBod(ob[16] == null ? "" : String.valueOf(ob[16]).split(" ")[0]);
+//            List<Object[]> commentLst = commentSemesterRepo.getCommentByStudentAndScholastic(si.getId(), scholasticService.findLatest());
+//            if (!ObjectUtils.isEmpty(commentLst)) {
+//                Map<String, String> cmts = new HashMap<>();
+//                for (Object[] cmt: commentLst) {
+//                    cmts.put(String.valueOf(cmt[0]), String.valueOf(cmt[1]));
+//                }
+//                si.setComments(cmts);
+//            }
             result.add(si);
         }
         return result;

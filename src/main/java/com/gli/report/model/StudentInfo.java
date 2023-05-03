@@ -26,6 +26,8 @@ public class StudentInfo {
     private String diocese;
     private String note;
 
+    private String bod;
+
     private Map<String, String> comments;
 
     public StudentInfo(String id, String fullName, String father, String mother, String teacher, String phone1,
