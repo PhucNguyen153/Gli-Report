@@ -17,4 +17,12 @@ public interface AttendanceRepo extends CrudRepository<Attendance, Integer> {
     List<Attendance> findAllByGradeIdAndTime(@Param("gradeIds") List<Integer> gradeIds,
                                              @Param("start") LocalDate start,
                                              @Param("end") LocalDate end);
+
+    @Query("select a from Attendance a where " +
+            "a.student.id in (:studentIds) " +
+            "and a.attendanceDate <= :end " +
+            "and a.attendanceDate >= :start")
+    List<Attendance> findAllByStudentIdAndTime(@Param("studentIds") List<String> studentIds,
+                                             @Param("start") LocalDate start,
+                                             @Param("end") LocalDate end);
 }

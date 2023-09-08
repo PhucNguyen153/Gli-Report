@@ -83,16 +83,21 @@ public class AttendanceService {
     }
 
     public List<AttendanceResponse> getAttendanceByTimeV2(AttendanceRequest request) {
+
+        //Get all student by class ids and map by class
+        List<StudentGrade> sgLst = studentGradeRepo.findAllStudentByGrade(request.getGradeIds());
+        Map<Grade, List<StudentGrade>> mapByGrade = sgLst.stream().collect(Collectors.groupingBy(StudentGrade::getGrade));
+        
         //Get all attendances and remove duplicate
-        List<Attendance> arrayList = attendanceRepo.findAllByGradeIdAndTime(request.getGradeIds(), request.getStartDate(), request.getEndDate());
+//        List<Attendance> arrayList = attendanceRepo.findAllByGradeIdAndTime(request.getGradeIds(), request.getStartDate(), request.getEndDate());
+        List<Attendance> arrayList = attendanceRepo.findAllByStudentIdAndTime(sgLst.stream().map(s->s.getStudent().getId()).collect(Collectors.toList()),
+                request.getStartDate(), request.getEndDate());
         List<AttendanceResponse> result = new ArrayList<>();
         Set<Attendance> uniqueElements = new HashSet<>(arrayList);
         //Map all attendance by student id
         Map<String, List<Attendance>> mapByStudent = uniqueElements.stream().collect(Collectors.groupingBy(a -> a.getStudent().getId()));
 
-        //Get all student by class ids and map by class
-        List<StudentGrade> sgLst = studentGradeRepo.findAllStudentByGrade(request.getGradeIds());
-        Map<Grade, List<StudentGrade>> mapByGrade = sgLst.stream().collect(Collectors.groupingBy(StudentGrade::getGrade));
+
 
         //Sort
         TreeMap<Grade, List<StudentGrade>> sorted = new TreeMap<>(mapByGrade);
