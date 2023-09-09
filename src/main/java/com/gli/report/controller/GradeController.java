@@ -19,7 +19,7 @@ public class GradeController {
 
     @GetMapping("")
     public ResponseEntity<?> getAllByUnitAndScholastic(@RequestParam("unitIds") List<Integer> unitIds,
-                                                       @RequestParam(value = "scholasticId", defaultValue = "3") Integer scholasticId) {
+                                                       @RequestParam(value = "scholasticId") Integer scholasticId) {
         try {
             return ResponseEntity.ok(gradeService.getByUnitAndScholastic(unitIds, scholasticId));
         } catch (Exception e) {
