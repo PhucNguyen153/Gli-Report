@@ -30,8 +30,10 @@ public class StudentInfo {
 
     private Map<String, String> comments;
 
+    private Integer status;
+
     public StudentInfo(String id, String fullName, String father, String mother, String teacher, String phone1,
-                       String phone2, String teacherPhoneNumber, String grade, String unit, String diocese, String note) {
+                       String phone2, String teacherPhoneNumber, String grade, String unit, String diocese, String note, Integer status) {
         this.id = id;
         this.fullName = fullName;
         this.father = father;
@@ -45,5 +47,6 @@ public class StudentInfo {
         this.phoneNumbers = new ArrayList<>();
         if (!ObjectUtils.isEmpty(phone1)) this.phoneNumbers.add(phone1);
         if (!ObjectUtils.isEmpty(phone2)) this.phoneNumbers.add(phone2);
+        this.status = status;
     }
 }

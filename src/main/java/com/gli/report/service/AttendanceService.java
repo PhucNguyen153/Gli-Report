@@ -319,6 +319,7 @@ public class AttendanceService {
             si.setDiocese(String.valueOf(ob[14]));
             si.setNote(ob[15] == null ? "" : String.valueOf(ob[15]));
             si.setBod(ob[16] == null ? "" : String.valueOf(ob[16]).split(" ")[0]);
+            si.setStatus(ob[17] == null ? null : Integer.parseInt(String.valueOf(ob[17])));
 //            List<Object[]> commentLst = commentSemesterRepo.getCommentByStudentAndScholastic(si.getId(), scholasticService.findLatest());
 //            if (!ObjectUtils.isEmpty(commentLst)) {
 //                Map<String, String> cmts = new HashMap<>();
