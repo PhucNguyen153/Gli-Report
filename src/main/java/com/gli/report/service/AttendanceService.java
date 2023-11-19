@@ -126,6 +126,7 @@ public class AttendanceService {
                         details.add(detail);
                     }
                 }
+                details.sort(Comparator.comparing(AttendanceDetail::getDate));
                 res.setDetails(details);
                 res.setWeekDay(weekDay);
                 res.setSunday(sunDay);
