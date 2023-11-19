@@ -1,14 +1,12 @@
 package com.gli.report.service;
 
 import com.gli.report.entity.*;
-import com.gli.report.model.AttendanceRequest;
-import com.gli.report.model.AttendanceResponse;
-import com.gli.report.model.SearchRequest;
-import com.gli.report.model.StudentInfo;
+import com.gli.report.model.*;
 import com.gli.report.repository.AttendanceRepo;
 import com.gli.report.repository.CommentSemesterRepo;
 import com.gli.report.repository.StudentGradeRepo;
 import com.gli.report.repository.StudentRepo;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -25,6 +23,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class AttendanceService {
 
     private final AttendanceRepo attendanceRepo;
@@ -32,18 +31,7 @@ public class AttendanceService {
     private final StudentRepo studentRepo;
     private final ScholasticService scholasticService;
     private final CommentSemesterRepo commentSemesterRepo;
-
-    public AttendanceService(AttendanceRepo attendanceRepo,
-                             StudentGradeRepo studentGradeRepo,
-                             StudentRepo studentRepo,
-                             ScholasticService scholasticService,
-                             CommentSemesterRepo commentSemesterRepo) {
-        this.attendanceRepo = attendanceRepo;
-        this.studentGradeRepo = studentGradeRepo;
-        this.studentRepo = studentRepo;
-        this.scholasticService = scholasticService;
-        this.commentSemesterRepo = commentSemesterRepo;
-    }
+    private final GradeService gradeService;
 
     public List<AttendanceResponse> getAttendanceByTime(AttendanceRequest request) {
         List<Attendance> arrayList = attendanceRepo.findAllByGradeIdAndTime(request.getGradeIds(), request.getStartDate(), request.getEndDate());
@@ -97,7 +85,8 @@ public class AttendanceService {
         //Map all attendance by student id
         Map<String, List<Attendance>> mapByStudent = uniqueElements.stream().collect(Collectors.groupingBy(a -> a.getStudent().getId()));
 
-
+        //Get rule Mass Day
+        List<DayOfWeek> ruleMassDay = gradeService.getRuleMassByGradeId(request.getGradeIds().get(0));
 
         //Sort
         TreeMap<Grade, List<StudentGrade>> sorted = new TreeMap<>(mapByGrade);
@@ -121,6 +110,7 @@ public class AttendanceService {
 
                 //Get Attendance of student and count
                 List<Attendance> aLst = mapByStudent.get(sg.getStudent().getId());
+                List<AttendanceDetail> details = new ArrayList<>();
                 if (!ObjectUtils.isEmpty(aLst)) {
                     for (Attendance a: aLst) {
                         if (a.getType() == 2) {
@@ -132,8 +122,11 @@ public class AttendanceService {
                         } else {
                             weekDay++;
                         }
+                        AttendanceDetail detail = new AttendanceDetail(a.getAttendanceDate(), ruleMassDay.contains(a.getAttendanceDate().getDayOfWeek()));
+                        details.add(detail);
                     }
                 }
+                res.setDetails(details);
                 res.setWeekDay(weekDay);
                 res.setSunday(sunDay);
                 res.setAttendClass(attendClass);

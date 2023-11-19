@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,7 +20,7 @@ public class AttendanceResponse {
     private int sunday;
     private int attendClass;
     private String teacher;
-
+    private List<AttendanceDetail> details;
     public String getFullName() {
         return this.lastName + " " + this.firstName;
     }
