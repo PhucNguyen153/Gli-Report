@@ -72,4 +72,31 @@ public class AttendanceController {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
+
+    @PostMapping("/export-detail")
+    public ResponseEntity<?> exportDetailMass(@RequestBody AttendanceRequest request) {
+        try {
+            ByteArrayInputStream result = attendanceService.exportExcelDetail(request);
+            if (result != null) {
+                StringBuilder headerValues = new StringBuilder();
+                headerValues.append("attachment;filename=")
+                        .append("Report_Detail_Mass_")
+                        .append(request.getStartDate().toString())
+                        .append("_")
+                        .append(request.getEndDate().toString())
+                        .append(".xlsx");
+                return ResponseEntity
+                        .status(HttpStatus.OK)
+                        .header(HttpHeaders.CONTENT_DISPOSITION, headerValues.toString())
+                        .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
+                        .body(new InputStreamResource(result));
+            }
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Something Wrong");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
 }

@@ -32,6 +32,7 @@ public class AttendanceService {
     private final ScholasticService scholasticService;
     private final CommentSemesterRepo commentSemesterRepo;
     private final GradeService gradeService;
+    private final ExportService exportService;
 
     public List<AttendanceResponse> getAttendanceByTime(AttendanceRequest request) {
         List<Attendance> arrayList = attendanceRepo.findAllByGradeIdAndTime(request.getGradeIds(), request.getStartDate(), request.getEndDate());
@@ -326,4 +327,58 @@ public class AttendanceService {
         }
         return result;
     }
+
+    public ByteArrayInputStream exportExcelDetail(AttendanceRequest request) throws IOException {
+        List<AttendanceResponse> data = getAttendanceByTimeV2(request);
+        Map<String, List<AttendanceResponse>> mapByGradeName = data.stream().collect(Collectors.groupingBy(AttendanceResponse::getGradeName));
+        TreeMap<String, List<AttendanceResponse>> sorted = new TreeMap<>(mapByGradeName);
+        Workbook workbook = new XSSFWorkbook();
+        List<String> headerTexts = new ArrayList<>(Arrays.asList("ID","Tên Thánh", "Họ Tên", "Ngày tham dự Thánh Lễ", "Ngày Lễ của Ngành"));
+        sorted.forEach((gName, aLst) -> {
+            Sheet sheet = workbook.createSheet(gName);
+            //Create data for header
+            exportService.createHeader(sheet, workbook, aLst.get(0).getTeacher(), headerTexts);
+
+            //Create data for each row
+            CellStyle normalStyle = setStyleForCell("normal", workbook);
+            createDataRowDetail(sheet, normalStyle, aLst);
+            for (int i = 0; i < 11; i++) {
+                sheet.autoSizeColumn(i);
+                sheet.setColumnWidth(i, sheet.getColumnWidth(i) * 17 / 10);
+            }
+
+        });
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        workbook.write(out);
+        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+        out.close();
+        return in;
+    }
+
+    private void createDataRowDetail(Sheet sheet, CellStyle cellStyle, List<AttendanceResponse> aLst) {
+        int rowNum = 1;
+        for (AttendanceResponse ar: aLst) {
+            for (AttendanceDetail detail: ar.getDetails()) {
+                Row row = sheet.createRow(rowNum);
+                Cell cell = row.createCell(0);
+                cell.setCellValue(ar.getId());
+                cell.setCellStyle(cellStyle);
+                cell = row.createCell(1);
+                cell.setCellValue(ar.getHolyName());
+                cell.setCellStyle(cellStyle);
+                cell = row.createCell(2);
+                cell.setCellValue(ar.getFullName());
+                cell.setCellStyle(cellStyle);
+                cell = row.createCell(3);
+                cell.setCellValue(detail.getDate().toString());
+                cell.setCellStyle(cellStyle);
+                cell = row.createCell(4);
+                cell.setCellValue(detail.isValidDate() ? "x" : "");
+                cell.setCellStyle(cellStyle);
+                rowNum++;
+            }
+        }
+    }
+
 }
